@@ -92,6 +92,7 @@ jobs:
           registry: ${{ needs.setenv.outputs.registry }}
           username: ${{ secrets.QUAY_USERID }}
           password: ${{ secrets.QUAY_PASSWORD }}
+          logout: false
 
       - name: Build and Push Docker Image
         if: ${{ github.repository_owner == 'ortelius' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
