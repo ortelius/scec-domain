@@ -164,9 +164,10 @@ func setupRoutes(app *fiber.App) {
 // @host localhost:3000
 // @BasePath /msapi/domain
 func main() {
-	app := fiber.New()                          // create a new fiber application
-	setupRoutes(app)                            // define the routes for this microservice
-	if err := app.Listen(":3000"); err != nil { // start listening for incoming connections
+	port := ":" + database.GetEnvDefault("MS_POST", "8080")
+	app := fiber.New()                       // create a new fiber application
+	setupRoutes(app)                         // define the routes for this microservice
+	if err := app.Listen(port); err != nil { // start listening for incoming connections
 		logger.Sugar().Fatalf("Failed get the microservice running: %v", err)
 	}
 }
