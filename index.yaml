@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  microservice:
+  - apiVersion: v2
+    appVersion: 11.0.12
+    created: "2023-05-03T14:50:28.151339796Z"
+    description: Domain microservice
+    digest: 3eed9f691e0f19c6ef70b17ae650d5a9f60ccba187ad338eea1a7b85ffd2c799
+    icon: https://ortelius.github.io/ortelius-charts/logo.png
+    name: microservice
+    type: application
+    urls:
+    - https://github.com/ortelius/scec-domain/releases/download/microservice-11.0.12/microservice-11.0.12.tgz
+    version: 11.0.12
+generated: "2023-05-03T14:50:28.151586555Z"
