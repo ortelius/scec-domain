@@ -22,7 +22,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: List of Domain
+      summary: Get a List of Domains
       tags:
         - domain
     post:
@@ -34,7 +34,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Creat a Domain
+      summary: Create a Domain
       tags:
         - domain
   /msapi/domain/:key:
@@ -47,7 +47,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Single Domain
+      summary: Get a Domain
       tags:
         - domain
 swagger: "2.0"

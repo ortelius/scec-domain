@@ -36,7 +36,7 @@ const docTemplate = `{
                 "tags": [
                     "domain"
                 ],
-                "summary": "List of Domain",
+                "summary": "Get a List of Domains",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -54,7 +54,7 @@ const docTemplate = `{
                 "tags": [
                     "domain"
                 ],
-                "summary": "Creat a Domain",
+                "summary": "Create a Domain",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -74,7 +74,7 @@ const docTemplate = `{
                 "tags": [
                     "domain"
                 ],
-                "summary": "Single Domain",
+                "summary": "Get a Domain",
                 "responses": {
                     "200": {
                         "description": "OK"
