@@ -5,7 +5,7 @@ COPY . /app
 
 RUN go build -o main .
 
-FROM cgr.dev/chainguard/glibc-dynamic@sha256:5232dc864c3aec8b87e6eee9a6f52237ab8aeede886d3bbd0b30467524bf0d54
+FROM cgr.dev/chainguard/glibc-dynamic@sha256:d71ef5ebe6f4b6e5fb621e5bb187affd1b6a105aa16f88b0a9115a73dd16ddf4
 
 WORKDIR /app
 COPY --from=builder /app/main .
