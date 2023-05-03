@@ -3,12 +3,15 @@ FROM cgr.dev/chainguard/go@sha256:598027417e0a039dc326c958feb5a088447bec198ad742
 WORKDIR /app
 COPY . /app
 
-RUN go build -o main .
+RUN go install github.com/swaggo/swag/cmd/swag@latest; \
+    swag init; \
+    go build -o main .
 
 FROM cgr.dev/chainguard/glibc-dynamic@sha256:d71ef5ebe6f4b6e5fb621e5bb187affd1b6a105aa16f88b0a9115a73dd16ddf4
 
 WORKDIR /app
 COPY --from=builder /app/main .
+COPY --from=builder /app/docs docs
 
 ENV ARANGO_HOST localhost
 ENV ARANGO_USER root
