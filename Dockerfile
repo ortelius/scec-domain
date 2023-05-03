@@ -10,6 +10,7 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest; \
 FROM cgr.dev/chainguard/glibc-dynamic@sha256:d71ef5ebe6f4b6e5fb621e5bb187affd1b6a105aa16f88b0a9115a73dd16ddf4
 
 WORKDIR /app
+
 COPY --from=builder /app/main .
 COPY --from=builder /app/docs docs
 
