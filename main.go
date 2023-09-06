@@ -9,6 +9,7 @@ import (
 
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 	"github.com/ortelius/scec-commons/database"
 	"github.com/ortelius/scec-commons/model"
@@ -33,6 +34,7 @@ func GetDomains(c *fiber.Ctx) error {
 
 	// query all the domains in the collection
 	aql := `FOR domain in evidence
+			FILTER (domain.objtype == 'DomainDetails')
 			RETURN domain`
 
 	// execute the query with no parameters
@@ -42,18 +44,18 @@ func GetDomains(c *fiber.Ctx) error {
 
 	defer cursor.Close() // close the cursor when returning from this function
 
-	var domains []model.Domain // define a list of domains to be returned
+	domains := model.NewDomains() // define a list of domains to be returned
 
 	for cursor.HasMore() { // loop thru all of the documents
 
-		var domain model.Domain      // fetched domain
-		var meta driver.DocumentMeta // data about the fetch
+		domain := model.NewDomain() // fetched domain
+		var meta driver.DocumentMeta           // data about the fetch
 
 		// fetch a document from the cursor
-		if meta, err = cursor.ReadDocument(ctx, &domain); err != nil {
+		if meta, err = cursor.ReadDocument(ctx,domain); err != nil {
 			logger.Sugar().Errorf("Failed to read document: %v", err)
 		}
-		domains = append(domains, domain)                                    // add the domain to the list
+		domains.Domains = append(domains.Domains, domain)       // add the domain to the list
 		logger.Sugar().Infof("Got doc with key '%s' from query\n", meta.Key) // log the key
 	}
 
@@ -80,7 +82,7 @@ func GetDomain(c *fiber.Ctx) error {
 	}
 
 	// query the domains that match the key or name
-	aql := `FOR domain in books
+	aql := `FOR domain in evidence
 			FILTER (domain.name == @key or domain._key == @key)
 			RETURN domain`
 
@@ -91,19 +93,19 @@ func GetDomain(c *fiber.Ctx) error {
 
 	defer cursor.Close() // close the cursor when returning from this function
 
-	var domain model.Domain // define a domain to be returned
+	domain := model.NewDomain() // define a domain to be returned
 
 	if cursor.HasMore() { // domain found
 		var meta driver.DocumentMeta // data about the fetch
 
-		if meta, err = cursor.ReadDocument(ctx, &domain); err != nil {
+		if meta, err = cursor.ReadDocument(ctx, domain); err != nil { // fetch the document into the object
 			logger.Sugar().Errorf("Failed to read document: %v", err)
 		}
 		logger.Sugar().Infof("Got doc with key '%s' from query\n", meta.Key)
 
 	} else { // not found so get from NFT Storage
 		if jsonStr, exists := database.MakeJSON(key); exists {
-			if err := json.Unmarshal([]byte(jsonStr), &domain); err != nil { // convert the JSON string from LTF into the object
+			if err := json.Unmarshal([]byte(jsonStr), domain); err != nil { // convert the JSON string from LTF into the object
 				logger.Sugar().Errorf("Failed to unmarshal from LTS: %v", err)
 			}
 		}
@@ -131,7 +133,7 @@ func NewDomain(c *fiber.Ctx) error {
 		return c.Status(503).Send([]byte(err.Error()))
 	}
 
-	cid, dbStr := database.MakeNFT(&domain) // normalize the object into NFTs and JSON string for db persistence
+	cid, dbStr := database.MakeNFT(domain) // normalize the object into NFTs and JSON string for db persistence
 
 	logger.Sugar().Infof("%s=%s\n", cid, dbStr) // log the new nft
 
@@ -156,6 +158,16 @@ func setupRoutes(app *fiber.App) {
 // @title Ortelius v11 Domain Microservice
 // @version 11.0.0
 // @description RestAPI for the Domain Object
+// @description ![Release](https://img.shields.io/github/v/release/ortelius/domain?sort=semver)
+// @description ![license](https://img.shields.io/github/license/ortelius/domain)
+// @description
+// @description ![Build](https://img.shields.io/github/actions/workflow/status/ortelius/domain/build-push-chart.yml)
+// @description [![MegaLinter](https://github.com/ortelius/domain/workflows/MegaLinter/badge.svg?branch=main)](https://github.com/ortelius/domain/actions?query=workflow%3AMegaLinter+branch%3Amain)
+// @description ![CodeQL](https://github.com/ortelius/domain/workflows/CodeQL/badge.svg)
+// @description [![OpenSSF-Scorecard](https://api.securityscorecards.dev/projects/github.com/ortelius/domain/badge)](https://api.securityscorecards.dev/projects/github.com/ortelius/domain)
+// @description
+// @description ![Discord](https://img.shields.io/discord/722468819091849316)
+
 // @termsOfService http://swagger.io/terms/
 // @contact.name Ortelius Google Group
 // @contact.email ortelius-dev@googlegroups.com
@@ -164,9 +176,15 @@ func setupRoutes(app *fiber.App) {
 // @host localhost:3000
 // @BasePath /msapi/domain
 func main() {
-	port := ":" + database.GetEnvDefault("MS_POST", "8080")
-	app := fiber.New()                       // create a new fiber application
-	setupRoutes(app)                         // define the routes for this microservice
+	port := ":" + database.GetEnvDefault("MS_PORT", "8080") // database port
+	app := fiber.New()                                      // create a new fiber application
+	app.Use(cors.New(cors.Config{
+		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowOrigins: "*",
+	}))
+
+	setupRoutes(app) // define the routes for this microservice
+
 	if err := app.Listen(port); err != nil { // start listening for incoming connections
 		logger.Sugar().Fatalf("Failed get the microservice running: %v", err)
 	}
