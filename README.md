@@ -36,8 +36,8 @@ Get a list of domains for the user.
 ##### Responses
 
 | Code | Description |
-| ---- | ----------- |
-| 200 | OK |
+|------|-------------|
+| 200  | OK          |
 
 #### POST
 ##### Summary
@@ -51,8 +51,8 @@ Create a new Domain and persist it
 ##### Responses
 
 | Code | Description |
-| ---- | ----------- |
-| 200 | OK |
+|------|-------------|
+| 200  | OK          |
 
 ### /msapi/domain/:key
 
@@ -68,5 +68,5 @@ Get a domain based on the _key or name.
 ##### Responses
 
 | Code | Description |
-| ---- | ----------- |
-| 200 | OK |
+|------|-------------|
+| 200  | OK          |
