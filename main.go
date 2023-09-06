@@ -44,18 +44,18 @@ func GetDomains(c *fiber.Ctx) error {
 
 	defer cursor.Close() // close the cursor when returning from this function
 
-	domains := model.NewDomains() // define a list of domains to be returned
+	var domains []*model.Domain // define a list of domains to be returned
 
 	for cursor.HasMore() { // loop thru all of the documents
 
-		domain := model.NewDomain() // fetched domain
-		var meta driver.DocumentMeta           // data about the fetch
+		domain := model.NewDomain()  // fetched domain
+		var meta driver.DocumentMeta // data about the fetch
 
 		// fetch a document from the cursor
-		if meta, err = cursor.ReadDocument(ctx,domain); err != nil {
+		if meta, err = cursor.ReadDocument(ctx, domain); err != nil {
 			logger.Sugar().Errorf("Failed to read document: %v", err)
 		}
-		domains.Domains = append(domains.Domains, domain)       // add the domain to the list
+		domains = append(domains, domain)                                    // add the domain to the list
 		logger.Sugar().Infof("Got doc with key '%s' from query\n", meta.Key) // log the key
 	}
 
@@ -158,13 +158,13 @@ func setupRoutes(app *fiber.App) {
 // @title Ortelius v11 Domain Microservice
 // @version 11.0.0
 // @description RestAPI for the Domain Object
-// @description ![Release](https://img.shields.io/github/v/release/ortelius/domain?sort=semver)
-// @description ![license](https://img.shields.io/github/license/ortelius/domain)
+// @description ![Release](https://img.shields.io/github/v/release/ortelius/scec-domain?sort=semver)
+// @description ![license](https://img.shields.io/github/license/ortelius/scec-domain)
 // @description
-// @description ![Build](https://img.shields.io/github/actions/workflow/status/ortelius/domain/build-push-chart.yml)
-// @description [![MegaLinter](https://github.com/ortelius/domain/workflows/MegaLinter/badge.svg?branch=main)](https://github.com/ortelius/domain/actions?query=workflow%3AMegaLinter+branch%3Amain)
-// @description ![CodeQL](https://github.com/ortelius/domain/workflows/CodeQL/badge.svg)
-// @description [![OpenSSF-Scorecard](https://api.securityscorecards.dev/projects/github.com/ortelius/domain/badge)](https://api.securityscorecards.dev/projects/github.com/ortelius/domain)
+// @description ![Build](https://img.shields.io/github/actions/workflow/status/ortelius/scec-domain/build-push-chart.yml)
+// @description [![MegaLinter](https://github.com/ortelius/scec-domain/workflows/MegaLinter/badge.svg?branch=main)](https://github.com/ortelius/scec-domain/actions?query=workflow%3AMegaLinter+branch%3Amain)
+// @description ![CodeQL](https://github.com/ortelius/scec-domain/workflows/CodeQL/badge.svg)
+// @description [![OpenSSF-Scorecard](https://api.securityscorecards.dev/projects/github.com/ortelius/scec-domain/badge)](https://api.securityscorecards.dev/projects/github.com/ortelius/scec-domain)
 // @description
 // @description ![Discord](https://img.shields.io/discord/722468819091849316)
 
