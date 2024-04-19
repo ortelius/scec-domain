@@ -1,6 +1,8 @@
 module cli
 
-go 1.20
+go 1.22
+
+toolchain go1.22.1
 
 require (
 	github.com/arangodb/go-driver/v2 v2.0.3
