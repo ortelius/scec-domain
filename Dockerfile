@@ -9,7 +9,6 @@ RUN go mod tidy; \
 FROM cgr.dev/chainguard/glibc-dynamic@sha256:e1f6ffa9629cc74d31d3d28007d846264f7a6cc2447bfa4275e9e7238a6619c3
 
 WORKDIR /app
-
 COPY --from=builder /app/main .
 
 ENV ARANGO_HOST localhost
